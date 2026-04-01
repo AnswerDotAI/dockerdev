@@ -25,12 +25,14 @@ RUN dpkg -i /tmp/pandoc.deb && rm /tmp/pandoc.deb
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 TZ=UTC
 RUN rm -f /etc/legal
 
-RUN echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
+RUN echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && echo 'Defaults lecture = never' >> /etc/sudoers
 RUN usermod -u ${HOST_UID} ubuntu \
     && { getent group ${HOST_GID} || groupmod -g ${HOST_GID} ubuntu; } \
     && usermod -g ${HOST_GID} ubuntu \
     && chown -R ${HOST_UID}:${HOST_GID} /home/ubuntu
+RUN mkdir -p /home/ubuntu/.ssh && chmod 700 /home/ubuntu/.ssh
+COPY ssh_config /home/ubuntu/.ssh/config
+RUN chmod 600 /home/ubuntu/.ssh/config && chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 
 RUN if [ -n "$GIT_USER_NAME" ]; then git config --system user.name "$GIT_USER_NAME"; fi \
     && if [ -n "$GIT_USER_EMAIL" ]; then git config --system user.email "$GIT_USER_EMAIL"; fi
@@ -41,4 +43,4 @@ WORKDIR /home/ubuntu
 COPY inst-uv.sh .
 RUN sh ./inst-uv.sh && rm ./inst-uv.sh
 
-CMD ["sleep", "infinity"]
+CMD ["bash", "-c", "sudo chmod 666 /run/host-services/ssh-auth.sock 2>/dev/null || true; exec sleep infinity"]
