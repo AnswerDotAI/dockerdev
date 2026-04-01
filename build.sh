@@ -1,12 +1,15 @@
+HOST_USER=$(whoami)
+
 docker build \
   --build-arg HOST_UID=$(id -u) \
   --build-arg HOST_GID=$(id -g) \
+  --build-arg HOST_USER="$HOST_USER" \
   --build-arg GIT_USER_NAME="$(git config user.name)" \
   --build-arg GIT_USER_EMAIL="$(git config user.email)" \
   -t linux .
 
 docker run -d --name linux \
-  -e HOME=/home/ubuntu \
+  -e HOME=/home/$HOST_USER \
   -e TZ="${TZ:-UTC}" \
   -v "ws:/ws" \
   -v /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock \
