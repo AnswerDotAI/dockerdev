@@ -12,7 +12,12 @@ Build the image and start the container:
 sh build.sh
 ```
 
-This builds the Docker image, starts the container in the background, and drops you into a shell. Your host's git identity and SSH agent are forwarded automatically.
+This builds the Docker image, starts the container in the background, and drops you into a shell. Your host's git identity and SSH agent are forwarded automatically. Set these if you want git details pre-configured:
+
+```bash
+export GIT_USER_NAME='Jeremy Howard'
+export GIT_USER_EMAIL='info@fast.ai'
+```
 
 ## Daily use
 
