@@ -23,6 +23,7 @@ RUN apt-fast install -y sudo pkg-config libssl-dev libffi-dev zlib1g-dev libbz2-
   && rm -rf /var/lib/apt/lists/*
 
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 TZ=UTC
+RUN rm -f /etc/legal
 
 RUN echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 

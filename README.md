@@ -35,21 +35,14 @@ ctrl-d exits the shell without stopping the container.
 
 ## What's included
 
-**Languages:** Python 3, Rust, C/C++ (gcc, g++, clang), cmake, make
-
-**Python tooling:** uv, pip, venv
-
-**Dev tools:** git, git-lfs, gdb, vim, nano, tmux, pandoc
-
-**Search/nav:** ripgrep, fd-find, bat, fzf, tree
-
-**System:** htop, strace, lsof, procps, ncdu
-
-**Network:** curl, wget, openssh-client, net-tools, iputils-ping, dnsutils
-
-**Data:** jq, sqlite3
-
-**Build deps:** libssl-dev, libffi-dev, zlib1g-dev, libreadline-dev, libsqlite3-dev, libopenblas-dev, libhdf5-dev
+- **Languages:** Python 3, Rust, C/C++ (gcc, g++, clang), cmake, make
+- **Python tooling:** uv, pip, venv
+- **Dev tools:** git, git-lfs, gdb, vim, nano, tmux, pandoc
+- **Search/nav:** ripgrep, fd-find, bat, fzf, tree
+- **System:** htop, strace, lsof, procps, ncdu
+- **Network:** curl, wget, openssh-client, net-tools, iputils-ping, dnsutils
+- **Data:** jq, sqlite3
+- **Build deps:** libssl-dev, libffi-dev, zlib1g-dev, libreadline-dev, libsqlite3-dev, libopenblas-dev, libhdf5-dev
 
 ## Shared workspace
 
@@ -57,7 +50,7 @@ The `/ws` directory is a Docker named volume that persists across container rebu
 
 ## Port forwarding
 
-Port 5001 inside the container is mapped to 55001 on the host. To expose more ports, edit the `docker run` command in `build.sh` or add `-p` flags when recreating the container.
+Ports 5001,8000,8080 inside the container is mapped to 55001,58000,58080 on the host. To expose more ports, edit the `docker run` command in `build.sh` or add `-p` flags when recreating the container.
 
 ## SSH agent
 
@@ -88,4 +81,3 @@ docker rm -f linux
 sh build.sh
 ```
 
-The `/ws` volume is preserved across rebuilds.
