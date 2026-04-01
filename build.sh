@@ -9,7 +9,8 @@ docker run -d --name linux \
   -e HOME=/home/ubuntu \
   -e TZ="${TZ:-UTC}" \
   -v "ws:/ws" \
-  -v "${SSH_AUTH_SOCK:-/dev/null}:/run/ssh-agent" -e SSH_AUTH_SOCK=/run/ssh-agent \
+  -v /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock \
+  -e SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -p 55001:5001 -p 58000:8000 -p 58080:8080 \
   linux
