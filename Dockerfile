@@ -1,5 +1,6 @@
 FROM ubuntu:latest
 ENV DEBIAN_FRONTEND=noninteractive
+ENV SHELL=/bin/bash
 ARG PANDOC_VERSION=3.7.0.2
 ARG TARGETARCH
 ARG HOST_UID=1000
@@ -8,15 +9,21 @@ ARG HOST_USER=ubuntu
 ARG GIT_USER_NAME
 ARG GIT_USER_EMAIL
 
-RUN apt-get update && apt-get install -y wget unminimize && yes | unminimize
+RUN apt-get update && apt-get install -y wget ca-certificates unminimize && yes | unminimize
 
 RUN --mount=type=bind,src=install-aptfast.sh,dst=install-aptfast.sh sh install-aptfast.sh
 
+RUN mkdir -p -m 755 /etc/apt/keyrings /etc/apt/sources.list.d \
+  && wget -nv -O /etc/apt/keyrings/githubcli-archive-keyring.gpg https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+  && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list \
+  && apt-get update
+
 RUN apt-fast install -y sudo pkg-config libssl-dev libffi-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev libopenblas-dev libhdf5-dev \
   rustc cargo vim-nox less graphviz ffmpeg procps htop file git-lfs clang \
-  curl git nano tmux  build-essential cmake make gcc g++ gdb  python3 python3-pip python3-venv python3-dev \
+  curl git gh nano tmux  build-essential cmake make gcc g++ gdb  python3 python3-pip python3-venv python3-dev \
   ripgrep fd-find bat fzf sqlite3 ncdu  strace lsof net-tools  tree jq unzip zip rsync  openssh-client iputils-ping dnsutils  man-db manpages-dev \
-  locales ca-certificates \
+  locales \
   && locale-gen en_US.UTF-8 \
   && rm -rf /var/lib/apt/lists/*
 
@@ -45,6 +52,8 @@ RUN if [ -n "$GIT_USER_NAME" ]; then git config --system user.name "$GIT_USER_NA
 
 USER ${HOST_USER}
 WORKDIR /home/${HOST_USER}
+
+RUN echo '[ -f "$HOME/.secrets" ] && . "$HOME/.secrets"' >> /home/${HOST_USER}/.bashrc
 
 COPY inst-uv.sh .
 RUN sh ./inst-uv.sh && rm ./inst-uv.sh

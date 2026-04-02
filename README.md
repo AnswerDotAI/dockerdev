@@ -42,7 +42,7 @@ ctrl-d exits the shell without stopping the container.
 
 - **Languages:** Python 3, Rust, C/C++ (gcc, g++, clang), cmake, make
 - **Python tooling:** uv, pip, venv
-- **Dev tools:** git, git-lfs, gdb, vim, nano, tmux, pandoc
+- **Dev tools:** git, git-lfs, gh, gdb, vim, nano, tmux, pandoc
 - **Search/nav:** ripgrep, fd-find, bat, fzf, tree
 - **System:** htop, strace, lsof, procps, ncdu
 - **Network:** curl, wget, openssh-client, net-tools, iputils-ping, dnsutils
@@ -53,9 +53,11 @@ ctrl-d exits the shell without stopping the container.
 
 The `/ws` directory is a Docker named volume that persists across container rebuilds. Use it for anything you want to keep.
 
-## Port forwarding
+## Networking
 
-Ports 5001,8000,8080 inside the container is mapped to 55001,58000,58080 on the host. To expose more ports, edit the `docker run` command in `build.sh` or add `-p` flags when recreating the container.
+The container now runs with Docker host networking enabled. Services listening inside the container are reachable on the same `localhost` port on the host, and services on the host are reachable from the container via `localhost`.
+
+This requires Docker Desktop host networking to be enabled. With `--network=host`, Docker ignores `-p` port mappings.
 
 ## SSH agent
 
@@ -68,6 +70,10 @@ The host's Docker socket is mounted, so you can run Docker commands from inside 
 ```bash
 sudo apt-get update && sudo apt-get install -y docker.io
 ```
+
+## Privileges
+
+The container is started with `--privileged` plus host PID, IPC, UTS, cgroup, and network namespaces. On Docker Desktop for macOS this means the container is highly privileged relative to the Docker Desktop Linux VM, not native macOS.
 
 ## Timezone
 
@@ -85,4 +91,3 @@ To rebuild from scratch:
 docker rm -f linux
 sh build.sh
 ```
-
